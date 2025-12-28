@@ -1,83 +1,81 @@
-import React, { useState } from 'react';
-import { X, Minus, Plus } from 'lucide-react';
+import React from 'react';
+import { X, Minus, Plus, Trash2 } from 'lucide-react';
+import { useShop } from '../context/ShopContext';
+import { useNavigate } from 'react-router-dom';
 
 const CartOverlay = ({ isOpen, onClose }) => {
-  // Hardcoded initial state to match the HTML preview
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: 'Evening Silk Dress',
-      meta: 'Black / M',
-      price: 360,
-      image: 'https://images.unsplash.com/photo-1542272454324-9927c7453013?auto=format&fit=crop&q=80&w=200',
-      qty: 1
-    },
-    {
-      id: 2,
-      name: 'Acetate Sunglasses',
-      meta: 'Tortoise / One Size',
-      price: 145,
-      image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=200',
-      qty: 1
-    }
-  ]);
+  const { cart, updateQty, removeFromCart } = useShop();
+  const navigate = useNavigate();
 
-  const updateQty = (id, change) => {
-    setItems(items.map(item => {
-      if (item.id === id) {
-        const newQty = Math.max(1, item.qty + change);
-        return { ...item, qty: newQty };
-      }
-      return item;
-    }));
+  const handleCheckout = () => {
+    onClose();
+    navigate('/checkout');
   };
 
-  const subtotal = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
+  const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+  if (!isOpen) return null;
 
   return (
     <div className={`cart-overlay-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
       <aside className="cart-sidebar" onClick={(e) => e.stopPropagation()}>
         <div className="cart-header">
-          <h2 className="cart-title">Shopping Cart ({items.length})</h2>
+          <h2 className="cart-title">Shopping Cart ({cart.length})</h2>
           <button className="close-btn" onClick={onClose} aria-label="Close cart">
             <X size={24} />
           </button>
         </div>
 
         <div className="cart-content">
-          {items.map(item => (
-            <div className="cart-item" key={item.id}>
-              <img src={item.image} className="cart-item-img" alt={item.name} />
-              <div className="item-details">
-                <span className="item-name">{item.name}</span>
-                <span className="item-meta">{item.meta}</span>
-                <div className="item-qty-price">
-                  <div className="qty-controls">
-                    <button className="qty-btn" onClick={() => updateQty(item.id, -1)}>
-                      <Minus size={14} />
-                    </button>
-                    <span className="qty-val">{item.qty}</span>
-                    <button className="qty-btn" onClick={() => updateQty(item.id, 1)}>
-                      <Plus size={14} />
+          {cart.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+              Your cart is empty.
+            </div>
+          ) : (
+            cart.map(item => (
+              <div className="cart-item" key={`${item.id}-${item.meta}`}>
+                <img src={item.image} className="cart-item-img" alt={item.name} />
+                <div className="item-details">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                    <span className="item-name">{item.name}</span>
+                    <button 
+                      onClick={() => removeFromCart(item.id, item.meta)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#999' }}
+                    >
+                      <Trash2 size={16} />
                     </button>
                   </div>
-                  <span className="item-price">${item.price}</span>
+                  <span className="item-meta">{item.meta}</span>
+                  <div className="item-qty-price">
+                    <div className="qty-controls">
+                      <button className="qty-btn" onClick={() => updateQty(item.id, -1, item.meta)}>
+                        <Minus size={14} />
+                      </button>
+                      <span className="qty-val">{item.qty}</span>
+                      <button className="qty-btn" onClick={() => updateQty(item.id, 1, item.meta)}>
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                    <span className="item-price">Rs.{item.price * item.qty}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
-        <div className="cart-footer">
-          <div className="subtotal">
-            <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+        {cart.length > 0 && (
+          <div className="cart-footer">
+            <div className="subtotal">
+              <span>Subtotal</span>
+              <span>Rs.{subtotal.toFixed(2)}</span>
+            </div>
+            <p style={{ textAlign: 'center', color: '#666', fontSize: '0.8rem', marginBottom: '1rem' }}>
+              Shipping and taxes calculated at checkout.
+            </p>
+            <button className="checkout-btn" onClick={handleCheckout}>Checkout</button>
           </div>
-          <p style={{ textAlign: 'center', color: '#666', fontSize: '0.8rem', marginBottom: '1rem' }}>
-            Shipping and taxes calculated at checkout.
-          </p>
-          <button className="checkout-btn">Checkout</button>
-        </div>
+        )}
       </aside>
     </div>
   );

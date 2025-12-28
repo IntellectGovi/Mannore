@@ -1,6 +1,13 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 
 const Contact = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    toast.success('Message sent! Our team will get back to you shortly.');
+    e.target.reset();
+  };
+
   return (
     <div className="contact-container">
       {/* Left: Form */}
@@ -11,7 +18,7 @@ const Contact = () => {
           anything else, our team is ready to answer all your questions.
         </p>
 
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label">Name</label>
             <input type="text" className="form-input" placeholder="Your Name" />

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ShoppingBag, Heart, Menu } from 'lucide-react';
+import { Search, ShoppingBag, Heart, Menu, User } from 'lucide-react';
+import { useShop } from '../context/ShopContext';
 
 const Header = ({ isTransparent, onCartClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, wishlist, cart } = useShop();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,9 +39,16 @@ const Header = ({ isTransparent, onCartClick }) => {
       </nav>
       <div className="icons">
         <Search size={20} />
-        <Heart size={20} />
-        <div onClick={onCartClick} style={{ cursor: 'pointer' }}>
+        <Link to="/wishlist" className="icon-link">
+          <Heart size={20} />
+          {wishlist.length > 0 && <span className="badge">{wishlist.length}</span>}
+        </Link>
+        <Link to={user ? "/account" : "/login"} className="icon-link">
+            <User size={20} />
+        </Link>
+        <div onClick={onCartClick} style={{ cursor: 'pointer' }} className="icon-link">
           <ShoppingBag size={20} />
+          {cart.length > 0 && <span className="badge">{cart.reduce((acc, item)=> acc + item.qty, 0)}</span>}
         </div>
         <Menu size={24} className="mobile-menu-icon" style={{ display: 'none' }} /> 
       </div>

@@ -1,7 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useShop } from '../context/ShopContext';
 
 const Home = () => {
+  const navigate = useNavigate();
+  const { setCategory, products: allProducts, loading } = useShop();
+
+  const handleCategoryClick = (category) => {
+    setCategory(category);
+    navigate('/shop');
+  };
+
+  const topPicks = allProducts?.slice(0, 3) || [];
+
   return (
     <div className="home-page">
       {/* Hero Section */}
@@ -22,25 +32,25 @@ const Home = () => {
           <h2 className="section-title">Browse by Category</h2>
         </div>
         <div className="grid category-grid">
-          <div className="card category-card">
+          <div className="card category-card" onClick={() => handleCategoryClick('Men')} style={{ cursor: 'pointer' }}>
             <img src="https://images.unsplash.com/photo-1617137968427-b2b161ca1a18?q=80&w=1780" alt="Men" />
             <div className="card-info">
               <h3>Men</h3>
             </div>
           </div>
-          <div className="card category-card">
+          <div className="card category-card" onClick={() => handleCategoryClick('Women')} style={{ cursor: 'pointer' }}>
             <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964" alt="Women" />
             <div className="card-info">
               <h3>Women</h3>
             </div>
           </div>
-          <div className="card category-card">
-            <img src="https://images.unsplash.com/photo-1624623278313-a930126a11c3?q=80&w=1887" alt="Kids" />
+          <div className="card category-card" onClick={() => handleCategoryClick('Accessories')} style={{ cursor: 'pointer' }}>
+            <img src="https://images.unsplash.com/photo-1624623278313-a930126a11c3?q=80&w=1887" alt="Accessories" />
             <div className="card-info">
-              <h3>Kids</h3>
+              <h3>Accessories</h3>
             </div>
           </div>
-          <div className="card category-card">
+          <div className="card category-card" onClick={() => handleCategoryClick('Beauty')} style={{ cursor: 'pointer' }}>
             <img src="https://images.unsplash.com/photo-1596462502278-27bfdd403348?q=80&w=1887" alt="Beauty" />
             <div className="card-info">
               <h3>Beauty</h3>
@@ -60,27 +70,21 @@ const Home = () => {
           </div>
         </div>
         <div className="grid">
-          <div className="card">
-            <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1887" alt="Fashion 1" />
-            <div className="card-info">
-              <h3>The Oversized Blazer</h3>
-              <p>$299</p>
+          {loading ? (
+            <div className="shop-loader" style={{ gridColumn: '1/-1' }}>
+              <div className="spinner"></div>
             </div>
-          </div>
-          <div className="card">
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2020" alt="Fashion 2" />
-            <div className="card-info">
-              <h3>Silk Essentials</h3>
-              <p>$150</p>
-            </div>
-          </div>
-          <div className="card">
-            <img src="https://images.unsplash.com/photo-1529139574466-a302d2d3f524?q=80&w=1888" alt="Fashion 3" />
-            <div className="card-info">
-              <h3>Signature Knitwear</h3>
-              <p>$180</p>
-            </div>
-          </div>
+          ) : (
+            topPicks.map(product => (
+              <div className="card" key={product.id} onClick={() => navigate('/shop')} style={{ cursor: 'pointer' }}>
+                <img src={product.image_url || product.image} alt={product.name} />
+                <div className="card-info">
+                  <h3>{product.name}</h3>
+                  <p>Rs.{product.price}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </section>
 

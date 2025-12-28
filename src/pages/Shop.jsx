@@ -1,6 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useShop } from '../context/ShopContext';
+import QuickViewModal from '../components/QuickViewModal';
+import { ShoppingBag, Search, Heart } from 'lucide-react';
 
 const Shop = () => {
+  const {
+    filteredProducts,
+    addToCart,
+    addToWishlist,
+    isInWishlist,
+    filters,
+    setFilters,
+    loading,
+  } = useShop();
+
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+  // Handlers for filter inputs
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    setFilters((prev) => {
+      const categories = checked
+        ? [...prev.categories, value]
+        : prev.categories.filter((c) => c !== value);
+      return { ...prev, categories };
+    });
+  };
+
+  const handlePriceChange = (e) => {
+    const max = Number(e.target.value);
+    setFilters((prev) => ({ ...prev, priceRange: [0, max] }));
+  };
+
+  const handleStockChange = (e) => {
+    const { checked } = e.target;
+    setFilters((prev) => ({ ...prev, inStock: checked }));
+  };
+
+  const handleSaleChange = (e) => {
+    const { checked } = e.target;
+    setFilters((prev) => ({ ...prev, onSale: checked }));
+  };
+
+  const handleSortChange = (e) => {
+    const { value } = e.target;
+    setFilters((prev) => ({ ...prev, sortBy: value }));
+  };
+
   return (
     <div className="shop-container">
       {/* Sidebar */}
@@ -8,27 +54,33 @@ const Shop = () => {
         <div className="filter-group">
           <span className="filter-title">Categories</span>
           <div className="checkbox-group">
-            <label>
-              <input type="checkbox" /> Men <span className="count">(12)</span>
-            </label>
-            <label>
-              <input type="checkbox" /> Women <span className="count">(24)</span>
-            </label>
-            <label>
-              <input type="checkbox" /> Accessories <span className="count">(8)</span>
-            </label>
-            <label>
-              <input type="checkbox" /> Beauty <span className="count">(15)</span>
-            </label>
+            {['Men', 'Women', 'Accessories', 'Beauty'].map((cat) => (
+              <label key={cat}>
+                <input
+                  type="checkbox"
+                  value={cat}
+                  onChange={handleCategoryChange}
+                  checked={filters.categories.includes(cat)}
+                />{' '}
+                {cat}
+              </label>
+            ))}
           </div>
         </div>
 
         <div className="filter-group">
           <span className="filter-title">Filter by Price</span>
-          <input type="range" className="price-range" />
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#666' }}>
+          <input
+            type="range"
+            min="0"
+            max="1000"
+            className="price-range"
+            value={filters.priceRange[1]}
+            onChange={handlePriceChange}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#666', marginTop: '0.5rem' }}>
             <span>$0</span>
-            <span>$1000</span>
+            <span>Up to ${filters.priceRange[1]}</span>
           </div>
         </div>
 
@@ -36,10 +88,10 @@ const Shop = () => {
           <span className="filter-title">Stock Status</span>
           <div className="checkbox-group">
             <label>
-              <input type="checkbox" /> In Stock
+              <input type="checkbox" onChange={handleStockChange} checked={filters.inStock} /> In Stock
             </label>
             <label>
-              <input type="checkbox" /> On Sale
+              <input type="checkbox" onChange={handleSaleChange} checked={filters.onSale} /> On Sale
             </label>
           </div>
         </div>
@@ -47,105 +99,93 @@ const Shop = () => {
 
       {/* Main Grid */}
       <main className="main-content">
-        <div className="toolbar">
-          <span className="result-count">Showing 1-9 of 45 results</span>
-          <select className="sort-select">
-            <option>Default Sorting</option>
-            <option>Sort by Popularity</option>
-            <option>Sort by Latest</option>
-            <option>Sort by Price: Low to High</option>
-            <option>Sort by Price: High to Low</option>
-          </select>
-        </div>
-
-        <div className="product-grid">
-          {/* Product 1 */}
-          <div className="product-card">
-            <div className="product-image-wrapper">
-              <span className="sale-badge">-20%</span>
-              <img src="https://images.unsplash.com/photo-1542272454324-9927c7453013?auto=format&fit=crop&q=80&w=1587"
-                className="product-image" alt="Dress" />
-            </div>
-            <div className="product-details">
-              <span className="product-category">Women</span>
-              <h3 className="product-title">Evening Silk Dress</h3>
-              <p className="product-price"><span className="old-price">$450</span> $360</p>
-            </div>
+        {loading ? (
+          <div className="shop-loader">
+            <div className="spinner"></div>
+            <p>Refining Selection...</p>
           </div>
+        ) : (
+          <>
+            <div className="toolbar">
+              <span className="result-count">
+                Showing {filteredProducts.length} results
+              </span>
+              <select className="sort-select" value={filters.sortBy} onChange={handleSortChange}>
+                <option value="default">Default Sorting</option>
+                <option value="popularity">Sort by Popularity</option>
+                <option value="latest">Sort by Latest</option>
+                <option value="price-low">Sort by Price: Low to High</option>
+                <option value="price-high">Sort by Price: High to Low</option>
+              </select>
+            </div>
 
-          {/* Product 2 */}
-          <div className="product-card">
-            <div className="product-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=1636"
-                className="product-image" alt="Jacket" />
+            <div className="product-grid">
+              {filteredProducts.map((product) => (
+                <div className="product-card" key={product.id}>
+                  <div className="product-image-wrapper">
+                    {(product.is_sale || product.sale) && (
+                      <span className="sale-badge">
+                        {product.discount || 'SALE'}
+                      </span>
+                    )}
+                    <img
+                      src={product.image_url || product.image}
+                      className="product-image"
+                      alt={product.name}
+                      onClick={() => setQuickViewProduct(product)}
+                      onError={(e) => { e.target.src = 'https://via.placeholder.com/400x400?text=No+Image'; }}
+                    />
+                    <div className="product-actions">
+                      <button
+                        className="action-btn cart-btn"
+                        onClick={() => addToCart(product)}
+                        title="Add to Cart"
+                      >
+                        <ShoppingBag size={20} />
+                      </button>
+                      <button
+                        className="action-btn quickview-btn"
+                        onClick={() => setQuickViewProduct(product)}
+                        title="Quick View"
+                      >
+                        <Search size={20} />
+                      </button>
+                      <button
+                        className="action-btn wishlist-btn"
+                        onClick={() => addToWishlist(product)}
+                        title={isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                      >
+                        <Heart 
+                          size={20} 
+                          fill={isInWishlist(product.id) ? "red" : "none"} 
+                          color={isInWishlist(product.id) ? "red" : "currentColor"} 
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="product-details">
+                    <span className="product-category">{product.category}</span>
+                    <h3 className="product-title">{product.name}</h3>
+                    <p className="product-price">
+                      {(product.original_price || product.originalPrice) && (
+                        <span className="old-price">${product.original_price || product.originalPrice}</span>
+                      )}{' '}
+                      ${product.price}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="product-details">
-              <span className="product-category">Men</span>
-              <h3 className="product-title">Wool Overcoat</h3>
-              <p className="product-price">$550</p>
-            </div>
-          </div>
-
-          {/* Product 3 */}
-          <div className="product-card">
-            <div className="product-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1627918543450-705b4618a80d?auto=format&fit=crop&q=80&w=1636"
-                className="product-image" alt="Bag" />
-            </div>
-            <div className="product-details">
-              <span className="product-category">Accessories</span>
-              <h3 className="product-title">Leather Tote</h3>
-              <p className="product-price">$295</p>
-            </div>
-          </div>
-
-          {/* Product 4 */}
-          <div className="product-card">
-            <div className="product-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1620799140408-ed5341cd2431?auto=format&fit=crop&q=80&w=1636"
-                className="product-image" alt="Top" />
-            </div>
-            <div className="product-details">
-              <span className="product-category">Women</span>
-              <h3 className="product-title">Linen Blouse</h3>
-              <p className="product-price">$120</p>
-            </div>
-          </div>
-
-          {/* Product 5 */}
-          <div className="product-card">
-            <div className="product-image-wrapper">
-              <span className="sale-badge">HOT</span>
-              <img src="https://images.unsplash.com/photo-1605763240004-7d93b47266a9?auto=format&fit=crop&q=80&w=1587"
-                className="product-image" alt="Shoes" />
-            </div>
-            <div className="product-details">
-              <span className="product-category">Men</span>
-              <h3 className="product-title">Classic Chelsea Boots</h3>
-              <p className="product-price">$220</p>
-            </div>
-          </div>
-
-          {/* Product 6 */}
-          <div className="product-card">
-            <div className="product-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1576487140836-39ce84462cb3?auto=format&fit=crop&q=80&w=1587"
-                className="product-image" alt="Watch" />
-            </div>
-            <div className="product-details">
-              <span className="product-category">Accessories</span>
-              <h3 className="product-title">Minimalist Watch</h3>
-              <p className="product-price">$180</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="pagination">
-          <a href="#" className="page-link active">1</a>
-          <a href="#" className="page-link">2</a>
-          <a href="#" className="page-link">&#8594;</a>
-        </div>
+          </>
+        )}
       </main>
+
+      {quickViewProduct && (
+        <QuickViewModal
+          product={quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+        />
+      )}
     </div>
   );
 };
