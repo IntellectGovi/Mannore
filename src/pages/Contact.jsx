@@ -42,7 +42,7 @@ const Contact = () => {
       {/* Right: Info */}
       <div className="contact-info-section">
         <div className="info-block">
-          <h3 className="info-title">Mannore Headquarters</h3>
+          <h3 className="info-title">MANNORÉ Headquarters</h3>
           <p className="info-text">
             Sitapur<br />
             Uttar Pradesh<br /> 

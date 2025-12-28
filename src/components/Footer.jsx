@@ -6,7 +6,7 @@ const Footer = () => {
     <footer>
       <div className="footer-content">
         <div className="footer-brand">
-          <div className="logo" style={{ marginBottom: '1rem' }}>MANNORE</div>
+          <div className="logo" style={{ marginBottom: '1rem' }}>MANNORÉ</div>
           <p style={{ color: '#666', fontSize: '0.9rem' }}>Redefining modern luxury.</p>
         </div>
         <div className="footer-links">
@@ -29,7 +29,10 @@ const Footer = () => {
         </div>
       </div>
       <div className="copyright">
-        &copy; 2025 MANNORE Fashion. All rights reserved.
+        &copy; 2025 MANNORÉ Fashion. All rights reserved.
+      </div>
+      <div className="copyright">
+        &copy; Created by <a href="">Govind ⚡❤️</a>
       </div>
     </footer>
   );
