@@ -30,7 +30,7 @@ const Header = ({ isTransparent, onCartClick }) => {
 
   return (
     <header className={headerClass}>
-      <Link to="/" className="logo">MANNORE</Link>
+      <Link to="/" className="logo">MANNORÉ</Link>
       <nav className="nav-links">
         <Link to="/">Home</Link>
         <Link to="/shop">Shop</Link>
