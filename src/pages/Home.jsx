@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
+import { Instagram } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -104,6 +105,39 @@ const Home = () => {
           <span className="feature-icon">&#128737;</span>
           <h4 style={{ marginBottom: '0.5rem' }}>Secure Payment</h4>
           <p style={{ fontSize: '0.8rem', color: '#aaa' }}>100% secure checkout process.</p>
+        </div>
+      </section>
+
+      {/* Social Showcase */}
+      <section className="social-showcase">
+        <div className="social-header-container">
+          <h2 className="social-header">TAG US @MANNORÉ &rarr;</h2>
+        </div>
+        <div className="social-grid">
+          <div className="social-card">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop" alt="Social 1" />
+            <div className="social-overlay">
+              <Instagram size={32} color="white" />
+            </div>
+          </div>
+          <div className="social-card">
+            <img src="https://images.unsplash.com/photo-1529139574466-a302d2052505?q=80&w=1000&auto=format&fit=crop" alt="Social 2" />
+            <div className="social-overlay">
+              <Instagram size={32} color="white" />
+            </div>
+          </div>
+          <div className="social-card">
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop" alt="Social 3" />
+            <div className="social-overlay">
+              <Instagram size={32} color="white" />
+            </div>
+          </div>
+          <div className="social-card">
+            <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1000&auto=format&fit=crop" alt="Social 4" />
+            <div className="social-overlay">
+              <Instagram size={32} color="white" />
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -12,6 +12,7 @@ const Shop = () => {
     filters,
     setFilters,
     loading,
+    products,
   } = useShop();
 
   const [quickViewProduct, setQuickViewProduct] = useState(null);
@@ -120,7 +121,7 @@ const Shop = () => {
             </div>
 
             <div className="product-grid">
-              {filteredProducts.map((product) => (
+              {products.map((product) => (
                 <div className="product-card" key={product.id}>
                   <div className="product-image-wrapper">
                     {(product.is_sale || product.sale) && (
@@ -133,7 +134,7 @@ const Shop = () => {
                       className="product-image"
                       alt={product.name}
                       onClick={() => setQuickViewProduct(product)}
-                      onError={(e) => { e.target.src = 'https://via.placeholder.com/400x400?text=No+Image'; }}
+                    // onError={(e) => { e.target.src = 'https://via.placeholder.com/400x400?text=No+Image'; }}
                     />
                     <div className="product-actions">
                       <button
@@ -155,10 +156,10 @@ const Shop = () => {
                         onClick={() => addToWishlist(product)}
                         title={isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                       >
-                        <Heart 
-                          size={20} 
-                          fill={isInWishlist(product.id) ? "red" : "none"} 
-                          color={isInWishlist(product.id) ? "red" : "currentColor"} 
+                        <Heart
+                          size={20}
+                          fill={isInWishlist(product.id) ? "red" : "none"}
+                          color={isInWishlist(product.id) ? "red" : "currentColor"}
                         />
                       </button>
                     </div>

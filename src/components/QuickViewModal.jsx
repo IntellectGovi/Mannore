@@ -18,11 +18,11 @@ const QuickViewModal = ({ product, onClose }) => {
         </div>
         <div className="quickview-content">
           <div className="quickview-image-side">
-            <img 
-              src={product.image_url || product.image} 
-              alt={product.name} 
-              className="quickview-image" 
-              onError={(e) => { e.target.src = 'https://via.placeholder.com/400x400?text=No+Image'; }} 
+            <img
+              src={product.image_url || product.image}
+              alt={product.name}
+              className="quickview-image"
+            // onError={(e) => { e.target.src = 'https://via.placeholder.com/400x400?text=No+Image'; }} 
             />
           </div>
           <div className="quickview-details-side">
@@ -40,8 +40,8 @@ const QuickViewModal = ({ product, onClose }) => {
               <button className="add-to-cart-btn" onClick={() => addToCart(product)}>
                 Add to Cart
               </button>
-              <button 
-                className="quickview-wishlist-btn" 
+              <button
+                className="quickview-wishlist-btn"
                 onClick={() => addToWishlist(product)}
                 title={isLiked ? "Remove from Wishlist" : "Add to Wishlist"}
               >

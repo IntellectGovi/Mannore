@@ -84,6 +84,10 @@ header.scrolled, header.fixed-header {
     font-weight: 500;
 }
 
+.mobile-nav-icons {
+    display: none;
+}
+
 .nav-links a:hover, nav a:hover {
     color: var(--accent);
 }
@@ -108,6 +112,14 @@ header.scrolled, header.fixed-header {
     color: var(--accent);
 }
 
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+}
+
 .badge {
     position: absolute;
     top: -8px;
@@ -125,49 +137,234 @@ header.scrolled, header.fixed-header {
 }
 
 /* Footer */
+/* Footer */
 footer {
-    padding: 4rem;
-    border-top: 1px solid var(--border);
-    background: #fff;
+    padding: 5rem 4rem;
+    background: #111; /* Dark background like TRUFF */
+    color: #fff;
+    position: relative;
+    font-family: 'Inter', sans-serif;
 }
 
 .footer-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 3rem;
 }
 
-.footer-links {
+.footer-column {
+    flex: 1;
+    min-width: 160px;
+}
+
+.brand-column {
+    flex: 1.5; /* Give brand column slightly more space */
+    min-width: 250px;
+}
+
+.footer-logo {
+    font-family: 'Inter', sans-serif; /* Using Inter for bold modern look or stick to Playfair if brand dictates, TRUFF uses sans-serif bold */
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.social-links {
     display: flex;
-    gap: 4rem;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.social-link:hover {
+    opacity: 0.7;
+    color: #fff;
+}
+
+.social-text {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.subscribe-column {
+    flex: 1.5;
+    min-width: 280px;
 }
 
 .footer-column h5 {
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.footer-column p {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 250px;
+}
+
+.newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.newsletter-form label {
     font-size: 1rem;
+    margin-bottom: 0.2rem;
+    display: none; /* Hidden visually as per design usually, or keep if needed */
+}
+
+/* Actually TRUFF has 'Enter your email' label above input? checking image... 
+   Yes, "Enter your email" is text above input. */
+.newsletter-form label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.newsletter-form input {
+    padding: 1rem;
+    background: #fff;
+    border: none;
+    color: #000;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.newsletter-form button {
+    padding: 1rem;
+    background: #d4b580; /* Gold/Beige color from image */
+    border: none;
+    color: #000;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.85rem;
+}
+
+.newsletter-form button:hover {
+    background: #c3a46e;
 }
 
 .footer-column ul {
-    line-height: 2;
+    line-height: 2.5;
 }
 
 .footer-column a {
-    color: #666;
-    font-size: 0.95rem;
-    transition: color 0.2s;
+    color: #fff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: opacity 0.2s;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 .footer-column a:hover {
-    color: var(--primary);
+    opacity: 0.7;
+    color: #fff;
 }
 
-.copyright {
-    margin-top: 4rem;
-    text-align: center;
-    color: #ccc;
-    font-size: 0.8rem;
+/* Floating Actions */
+.floating-actions {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none; /* Let clicks pass through empty space */
+    z-index: 100;
+}
+
+.accessibility-btn, .chat-btn {
+    pointer-events: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative; /* Context for absolute positioning if needed */
+}
+
+.accessibility-btn {
+    background: #d4b580; /* Goldish bg */
+    color: #fff;
+}
+
+.chat-btn {
+    background: #fff;
+    color: #000;
+    margin-left: auto; /* Push to right */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.accessibility-btn:hover, .chat-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .footer-content {
+        gap: 2rem;
+    }
+    footer {
+        padding: 4rem 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+    }
+    .footer-column {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+    .brand-column {
+        order: -1;
+    }
+    .subscribe-column {
+        width: 100%;
+        max-width: 100%;
+    }
+    .newsletter-form p {
+        max-width: 100%;
+    }
+    .floating-actions {
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+    }
 }
 
 /* Hero Section (Home) */
@@ -1395,9 +1592,86 @@ footer {
     header {
         padding: 1rem 2rem;
     }
+
+    /* Mobile Menu Styles */
     .nav-links {
-        display: none;
+        display: flex;
+        position: fixed;
+        top: 0;
+        right: -100%; /* Hidden by default on right */
+        left: auto; /* Reset left */
+        width: 80%; /* Drawer style */
+        height: 100vh;
+        background: #fff;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 6rem 2rem;
+        transition: right 0.3s ease-in-out;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1); /* Shadow on left */
+        gap: 2rem;
+        z-index: 1001; /* Above header */
     }
+
+    .nav-links.active {
+        right: 0; /* Slide in from right */
+    }
+
+    .nav-links a {
+        font-size: 1.2rem;
+        color: var(--primary);
+    }
+
+    /* Mobile Nav Icons Container */
+    .mobile-nav-icons {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+        margin-top: 2rem;
+        border-top: 1px solid #eee;
+        padding-top: 2rem;
+    }
+
+    .mobile-icon-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1rem;
+        color: #666;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .mobile-icon-link span {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+    }
+
+    /* Hide Desktop Icons on Mobile */
+    .icons {
+        gap: 0.5rem; /* Reduce gap for hamburger */
+    }
+    
+    .icons .icon-link, .icons > a {
+        display: none; /* Hide everything except Hamburger */
+    }
+
+    .icons .mobile-menu-btn {
+        display: block; /* Ensure hamburger is visible */
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--primary);
+        z-index: 1002; /* Above menu to allow closing */
+    }
+    
+    /* Ensure Hamburger is clickable when menu is open */
+    .mobile-menu-icon {
+        display: block !important;
+    }
+
     .grid, .product-grid, .values-grid, .checkout-grid {
         grid-template-columns: 1fr;
     }
@@ -1943,5 +2217,88 @@ footer {
     font-style: italic;
     color: #888;
     letter-spacing: 1px;
+}
+
+/* Social Showcase */
+.social-showcase {
+    padding: 6rem 4rem;
+    text-align: center;
+}
+
+.social-header-container {
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.social-header {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: color 0.3s;
+    font-family: 'Playfair Display', serif;
+}
+
+.social-header:hover {
+    color: var(--accent-color);
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.social-card {
+    position: relative;
+    aspect-ratio: 1; /* Square images */
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.social-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.social-card:hover img {
+    transform: scale(1.1);
+}
+
+.social-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.social-card:hover .social-overlay {
+    opacity: 1;
+}
+
+/* Responsive for Social Showcase */
+@media (max-width: 1024px) {
+    .social-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .social-grid {
+        grid-template-columns: 1fr;
+    }
+    .social-header {
+        font-size: 1.8rem;
+    }
 }
 
